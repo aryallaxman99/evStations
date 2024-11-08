@@ -1,5 +1,9 @@
 import { useState, useCallback } from "react";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
+import { stations } from "./assets/stations";
 import "./App.css";
 
 const center = {
@@ -23,23 +27,29 @@ function App() {
     setMap(null);
   }, []);
 
-  return isLoaded ? (
-    <div className="px-10 pt-4">
-      <h1 className="text-3xl text-red-300 mb-3">EV Charging Stations</h1>
-      <GoogleMap
-        mapContainerStyle={{ width: "900px", height: "700px" }}
-        center={center}
-        zoom={14}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-      ></GoogleMap>
-    </div>
-  ) : (
-    <>
-      <h1 className="p-20 text-center text-red-600 text-3xl">
-        Is Loaded is not called.
+  return (
+    <div className="px-10 pt-4 w-full h-screen">
+      <h1 className="text-3xl text-red-300 mb-3">
+        EV Charging Stations in Nepal
       </h1>
-    </>
+      {isLoaded ? (
+        <>
+          <GoogleMap
+            mapContainerStyle={{ width: "100%", height: "60%" }}
+            center={center}
+            zoom={14}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+          ></GoogleMap>
+        </>
+      ) : (
+        <>
+          <div>
+            <Skeleton height={500} className="mb-3" direction="ltr" />
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
