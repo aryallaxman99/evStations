@@ -1,7 +1,7 @@
 import "./App.css";
 import { stations } from "./assets/stations";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -13,6 +13,16 @@ function App() {
     lat: 27.7103,
     lng: 85.3222,
   });
+  const [chargingStations, setChargingStations] = useState([]);
+
+  useEffect(() => {
+    const newStations = stations.map((item) => ({
+      lat: Number(item.latitude),
+      lng: Number(item.longitude),
+    }));
+
+    setChargingStations(newStations);
+  }, [stations]);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -59,7 +69,19 @@ function App() {
             onLoad={onLoad}
             onUnmount={onUnmount}
           >
-            <Marker position={center} />
+            {chargingStations
+              ? chargingStations.map((locations, index) => (
+                  <Marker
+                    icon={{
+                      url: "https://cdn-icons-png.flaticon.com/512/4979/4979090.png",
+                      scaledSize: new window.google.maps.Size(40, 40),
+                    }}
+                    key={index}
+                    position={locations}
+                  />
+                ))
+              : null}
+
             <button
               type="button"
               className="absolute bottom-48 right-3 bg-white w-auto"
